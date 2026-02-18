@@ -1,5 +1,4 @@
 
-
 # Digital Memory Capsule App
 
 A Flutter mobile application using Firebase that allows users to create individual and shared memory capsules with future unlock, invite code system, and Google Sign-In.
@@ -24,5 +23,4 @@ Firebase Storage
 
 Manshita Agarwal
 MIT Manipal
-
 
