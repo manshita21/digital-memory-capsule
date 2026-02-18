@@ -1,4 +1,4 @@
-package com.example.digital_memory_capsule
+package com.manshita.digital_memory_capsule
 
 import io.flutter.embedding.android.FlutterActivity
 
