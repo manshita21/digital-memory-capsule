@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:digital_memory_capsule/login_screen.dart';
+
+import 'login_screen.dart';
+import 'home_screen.dart';
+import 'services/auth_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,8 +14,16 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  final AuthService _authService = AuthService();
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: LoginScreen());
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+
+      home: _authService.getCurrentUser() != null
+          ? HomeScreen()
+          : LoginScreen(),
+    );
   }
 }
