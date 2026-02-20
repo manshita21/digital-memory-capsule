@@ -344,12 +344,69 @@ class CapsuleDetailScreen extends StatelessWidget {
 
   }
 
+  //LOCK CAPSULE
+  Future<void> lockCapsule(BuildContext context) async {
+
+    DateTime? pickedDate =
+    await showDatePicker(
+
+      context: context,
+
+      initialDate:
+      DateTime.now().add(
+          const Duration(days: 1)),
+
+      firstDate:
+      DateTime.now(),
+
+      lastDate:
+      DateTime(2100),
+
+    );
+
+    if (pickedDate == null) return;
+
+    await FirebaseFirestore.instance
+        .collection("capsules")
+        .doc(capsule.id)
+        .update({
+
+      "isLocked": true,
+
+      "unlockDate":
+      Timestamp.fromDate(pickedDate),
+
+    });
+
+    ScaffoldMessenger.of(context)
+        .showSnackBar(
+
+      SnackBar(
+        content:
+        Text("Capsule locked successfully"),
+      ),
+
+    );
+
+  }
+
   @override
   Widget build(BuildContext context) {
 
+    Timestamp? unlockTimestamp= capsule["unlockDate"];
+    DateTime? unlockDate = unlockTimestamp?.toDate();
+
     String title = capsule["title"];
     String inviteCode = capsule["inviteCode"];
-    bool isLocked = capsule["isLocked"];
+
+    bool isLocked = capsule["isLocked"] == true;
+
+    bool isSealed= isLocked && unlockDate!=null && DateTime.now().isBefore(unlockDate);
+
+    bool isUnlocked =
+        isLocked &&
+            unlockDate != null &&
+            DateTime.now().isAfter(unlockDate);
 
     return Scaffold(
 
@@ -386,10 +443,20 @@ class CapsuleDetailScreen extends StatelessWidget {
             const SizedBox(height: 8),
 
             Text(
-              isLocked ? "Status: Locked" : "Status: Unlocked",
+              !isLocked
+                  ? "The future is waiting… add memories your future self will cherish 💭"
+                  : isSealed
+                  ? "A message from your past awaits… unlocking on ${unlockDate!.day}/${unlockDate.month}/${unlockDate.year}✨"
+                  : "The capsule has opened… relive your memories 🌟",
+
               style: TextStyle(
-                color: isLocked ? Colors.red : Colors.green,
                 fontWeight: FontWeight.bold,
+                fontSize: 16,
+                color: !isLocked
+                    ? Colors.green
+                    : isSealed
+                    ? Colors.red
+                    : Colors.blue,
               ),
             ),
 
@@ -411,9 +478,9 @@ class CapsuleDetailScreen extends StatelessWidget {
 
                 ElevatedButton.icon(
 
-                  onPressed: () =>
-                      openAddTextDialog(context),
-
+                  onPressed: (!isLocked || isUnlocked)
+                        ? () => openAddTextDialog(context)
+                        : null,
                   icon: const Icon(Icons.text_snippet),
 
                   label: const Text("Add Text"),
@@ -422,7 +489,8 @@ class CapsuleDetailScreen extends StatelessWidget {
 
                 ElevatedButton.icon(
 
-                  onPressed: ()=> pickImage(context),
+                  onPressed:(!isLocked || isUnlocked)
+                        ?() => pickImage(context): null,
 
                   icon: const Icon(Icons.image),
 
@@ -447,7 +515,9 @@ class CapsuleDetailScreen extends StatelessWidget {
 
                 ElevatedButton.icon(
 
-                  onPressed: () => recordAudio(context),
+                  onPressed: (!isLocked || isUnlocked)
+                      ? () => recordAudio(context)
+                      : null  ,
 
                   icon: const Icon(Icons.mic),
 
@@ -457,7 +527,9 @@ class CapsuleDetailScreen extends StatelessWidget {
 
                 ElevatedButton.icon(
 
-                  onPressed: () => pickVideo(context),
+                  onPressed: (!isLocked || isUnlocked)
+                      ? () => pickVideo(context)
+                      : null ,
 
                   icon: const Icon(Icons.video_library),
 
@@ -495,25 +567,28 @@ class CapsuleDetailScreen extends StatelessWidget {
 
               trailing: const Icon(Icons.arrow_forward),
 
-              onTap: () {
-
+              onTap:(!isLocked || isUnlocked)
+                  ? () {
                 Navigator.push(
-
                   context,
-
                   MaterialPageRoute(
-
-                    builder: (context) =>
+                    builder: (_) =>
                         TextMemoriesScreen(
                           capsuleId: capsule.id,
                         ),
-
                   ),
-
                 );
-
+              }
+                  : () {
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      "Capsule is sealed",
+                    ),
+                  ),
+                );
               },
-
             ),
 
             ListTile(
@@ -524,18 +599,28 @@ class CapsuleDetailScreen extends StatelessWidget {
 
               trailing: const Icon(Icons.arrow_forward),
 
-              onTap: () {
+              onTap: (!isLocked || isUnlocked)
+                  ? () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
+                    builder: (_) =>
                         ImageMemoriesScreen(
                           capsuleId: capsule.id,
                         ),
                   ),
                 );
+              }
+                  : () {
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      "Capsule is sealed",
+                    ),
+                  ),
+                );
               },
-
             ),
 
             ListTile(
@@ -546,19 +631,28 @@ class CapsuleDetailScreen extends StatelessWidget {
 
               trailing: const Icon(Icons.arrow_forward),
 
-              onTap: () {
-
+              onTap: (!isLocked || isUnlocked)
+                  ? () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
+                    builder: (_) =>
                         AudioMemoriesScreen(
                           capsuleId: capsule.id,
                         ),
                   ),
                 );
+              }
+                  : () {
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      "Capsule is sealed",
+                    ),
+                  ),
+                );
               },
-
             ),
 
             ListTile(
@@ -569,24 +663,55 @@ class CapsuleDetailScreen extends StatelessWidget {
 
               trailing: const Icon(Icons.arrow_forward),
 
-              onTap: () {
+              onTap: (!isLocked || isUnlocked)
+                  ? () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
+                    builder: (_) =>
                         VideoMemoriesScreen(
                           capsuleId: capsule.id,
                         ),
                   ),
                 );
+              }
+                  : () {
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      "Capsule is sealed",
+                    ),
+                  ),
+                );
               },
-
             ),
+
+            if (!isLocked)
+
+              ElevatedButton.icon(
+
+                onPressed:
+                    () => lockCapsule(context),
+
+                icon:
+                const Icon(Icons.lock),
+
+                label:
+                const Text("Lock Capsule"),
+
+                style:
+                ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                ),
+
+              ),
           ],
 
         ),
 
       ),
+
 
     );
 

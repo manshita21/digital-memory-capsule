@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../services/capsule_service.dart';
 import 'login_screen.dart';
 import 'capsule_detail_screen.dart';
-
+import 'create_capsule_screen.dart';
 
 
 class HomeScreen extends StatelessWidget {
@@ -58,49 +58,16 @@ class HomeScreen extends StatelessWidget {
           ElevatedButton(
 
             onPressed: () async {
-
-              String? inviteCode = await _capsuleService.createCapsule(
-                title: "My Shared Capsule",
-                unlockDate: DateTime.now().add(Duration(days: 30)),
-                isShared: true,
-              );
-
-              if (inviteCode != null && inviteCode.isNotEmpty) {
-
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-
-                    title: Text("Invite Code"),
-
-                    content: SelectableText(
-                      inviteCode,
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: Text("OK"),
-                      )
-                    ],
-
-                  ),
-                );
-
-              }
-
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("Shared Capsule Created")),
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      CreateCapsuleScreen(),
+                ),
               );
 
             },
-
-            child: const Text("Create Shared Capsule"),
-
+            child: Text("Create Capsule"),
           ),
 
           const SizedBox(height: 20),

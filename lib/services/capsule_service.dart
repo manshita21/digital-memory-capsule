@@ -24,7 +24,6 @@ class CapsuleService {
 
   Future<String?> createCapsule({
     required String title,
-    required DateTime unlockDate,
     required bool isShared,
   }) async {
 
@@ -48,9 +47,9 @@ class CapsuleService {
 
       "isShared": isShared,
 
-      "isLocked": true,
+      "isLocked": false,
 
-      "unlockDate": unlockDate,
+      "unlockDate": null,
 
       "createdAt": FieldValue.serverTimestamp(),
 
