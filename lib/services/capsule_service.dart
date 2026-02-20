@@ -103,4 +103,16 @@ class CapsuleService {
 
   }
 
+  Stream<QuerySnapshot> getUserCapsules() {
+
+    String userId = _auth.currentUser!.uid;
+
+    return _db
+        .collection("capsules")
+        .where("members", arrayContains: userId)
+        .orderBy("createdAt", descending: true)
+        .snapshots();
+
+  }
+
 }
