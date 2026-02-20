@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
-import 'login_screen.dart';
-import '../services/capsule_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../services/capsule_service.dart';
+import 'login_screen.dart';
+import 'capsule_detail_screen.dart';
+
+
 
 class HomeScreen extends StatelessWidget {
   final AuthService _authService = AuthService();
@@ -218,6 +221,18 @@ class HomeScreen extends StatelessWidget {
                       const EdgeInsets.all(8),
 
                       child: ListTile(
+
+                        onTap: () {
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  CapsuleDetailScreen(capsule: capsule),
+                            ),
+                          );
+
+                        },
 
                         leading: Icon(
                           isLocked
