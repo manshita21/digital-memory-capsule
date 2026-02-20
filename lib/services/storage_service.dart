@@ -45,4 +45,41 @@ class StorageService {
 
   }
 
+  Future<String?> uploadAudio({
+    required File file,
+    required String capsuleId,
+  }) async {
+
+    try {
+
+      String fileName =
+      DateTime.now().millisecondsSinceEpoch.toString();
+
+      Reference ref = _storage
+          .ref()
+          .child("capsules")
+          .child(capsuleId)
+          .child("audio")
+          .child("$fileName.m4a");
+
+      UploadTask uploadTask =
+      ref.putFile(file);
+
+      TaskSnapshot snapshot =
+      await uploadTask;
+
+      String downloadUrl =
+      await snapshot.ref.getDownloadURL();
+
+      return downloadUrl;
+
+    } catch (e) {
+
+      print("Audio upload error: $e");
+      return null;
+
+    }
+
+  }
+
 }

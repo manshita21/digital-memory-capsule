@@ -93,6 +93,52 @@ class MemoryService {
 
   }
 
+  Future<void> addAudioMemory({
+    required String capsuleId,
+    required File audioFile,
+    required String caption,
+  }) async {
+
+    User user = _auth.currentUser!;
+
+    String? downloadURL =
+    await _storageService.uploadAudio(
+      file: audioFile,
+      capsuleId: capsuleId,
+    );
+
+    if (downloadURL == null) {
+      throw Exception("Audio upload failed");
+    }
+
+    await _db
+        .collection("capsules")
+        .doc(capsuleId)
+        .collection("memories")
+        .add({
+
+      "type": "audio",
+
+      "fileURL": downloadURL,
+
+      "caption": caption,
+
+      "text": "",
+
+      "createdBy": user.uid,
+
+      "createdByName":
+      user.displayName ??
+          user.phoneNumber ??
+          "User",
+
+      "createdAt":
+      FieldValue.serverTimestamp(),
+
+    });
+
+  }
+
   Stream<QuerySnapshot> getMemoriesByType(
       String capsuleId,
       String type,

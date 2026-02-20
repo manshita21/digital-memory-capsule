@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:record/record.dart';
+import 'package:path_provider/path_provider.dart';
+
 
 import '../services/memory_service.dart';
 import 'text_memories_screen.dart';
 import 'image_memories_screen.dart';
+import 'audio_memories_screen.dart';
 
 class CapsuleDetailScreen extends StatelessWidget {
 
@@ -17,7 +21,7 @@ class CapsuleDetailScreen extends StatelessWidget {
   });
 
   final MemoryService _memoryService = MemoryService();
-
+  final AudioRecorder _audioRecorder = AudioRecorder();
   // ADD TEXT DIALOG
 
   void openAddTextDialog(BuildContext context) {
@@ -162,6 +166,110 @@ class CapsuleDetailScreen extends StatelessWidget {
 
   }
 
+  //ADD AUDIO RECORDING
+  Future<void> recordAudio(BuildContext context) async {
+
+    if (await _audioRecorder.hasPermission()) {
+
+      Directory dir =
+      await getTemporaryDirectory();
+
+      String path =
+          "${dir.path}/${DateTime.now().millisecondsSinceEpoch}.m4a";
+
+      await _audioRecorder.start(
+        const RecordConfig(),
+        path: path,
+      );
+
+      showDialog(
+
+        context: context,
+
+        builder: (context) {
+
+          return AlertDialog(
+
+            title: Text("Recording..."),
+
+            actions: [
+
+              ElevatedButton(
+
+                onPressed: () async {
+
+                  String? filePath =
+                  await _audioRecorder.stop();
+
+                  if (filePath == null) return;
+
+                  File audioFile =
+                  File(filePath);
+
+                  TextEditingController captionController =
+                  TextEditingController();
+
+                  Navigator.pop(context);
+
+                  showDialog(
+
+                    context: context,
+
+                    builder: (context) {
+
+                      return AlertDialog(
+
+                        title: Text("Add Caption"),
+
+                        content: TextField(
+                          controller: captionController,
+                        ),
+
+                        actions: [
+
+                          ElevatedButton(
+
+                            onPressed: () async {
+
+                              await _memoryService.addAudioMemory(
+                                capsuleId: capsule.id,
+                                audioFile: audioFile,
+                                caption: captionController.text,
+                              );
+
+                              Navigator.pop(context);
+
+                            },
+
+                            child: Text("Upload"),
+
+                          )
+
+                        ],
+
+                      );
+
+                    },
+
+                  );
+
+                },
+
+                child: Text("Stop & Save"),
+
+              )
+
+            ],
+
+          );
+
+        },
+
+      );
+
+    }
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -266,7 +374,7 @@ class CapsuleDetailScreen extends StatelessWidget {
 
                 ElevatedButton.icon(
 
-                  onPressed: () {},
+                  onPressed: () => recordAudio(context),
 
                   icon: const Icon(Icons.mic),
 
@@ -365,7 +473,18 @@ class CapsuleDetailScreen extends StatelessWidget {
 
               trailing: const Icon(Icons.arrow_forward),
 
-              onTap: () {},
+              onTap: () {
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        AudioMemoriesScreen(
+                          capsuleId: capsule.id,
+                        ),
+                  ),
+                );
+              },
 
             ),
 
