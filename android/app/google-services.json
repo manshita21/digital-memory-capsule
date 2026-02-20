@@ -12,7 +12,12 @@
           "package_name": "com.example.digital_memory_capsule"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1083369455740-tt6blps0pkqp6upv3p0st7u1oiiaaonr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAjF8ESaxVL2kUNB0q0VXshHdwlINZlsmk"
@@ -20,7 +25,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1083369455740-tt6blps0pkqp6upv3p0st7u1oiiaaonr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1083369455740-l7dob3b7pvq8t4guekirtr5cflhm7u82.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.digitalMemoryCapsule"
+              }
+            }
+          ]
         }
       }
     },
@@ -31,7 +48,20 @@
           "package_name": "com.manshita.digital_memory_capsule"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1083369455740-751aat8g20pfkpulrpjk08nsdt6p4f78.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.manshita.digital_memory_capsule",
+            "certificate_hash": "bc069ec90d6d0017d5d771a4c9b09251efab5bff"
+          }
+        },
+        {
+          "client_id": "1083369455740-tt6blps0pkqp6upv3p0st7u1oiiaaonr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAjF8ESaxVL2kUNB0q0VXshHdwlINZlsmk"
@@ -39,7 +69,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1083369455740-tt6blps0pkqp6upv3p0st7u1oiiaaonr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1083369455740-l7dob3b7pvq8t4guekirtr5cflhm7u82.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.digitalMemoryCapsule"
+              }
+            }
+          ]
         }
       }
     }

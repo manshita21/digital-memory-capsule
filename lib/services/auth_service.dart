@@ -1,7 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'firestore_service.dart';
 
 class AuthService {
+  final FirestoreService _firestoreService = FirestoreService();
+
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
@@ -32,7 +35,15 @@ class AuthService {
       credential,
     );
 
-    return userCredential.user;
+    User? user = userCredential.user;
+
+    if (user != null) {
+      await _firestoreService.saveUser(user);
+    }
+
+    return user;
+
+
   }
 
   Future<void> signOut() async {
@@ -84,8 +95,15 @@ class AuthService {
       UserCredential userCredential = await _auth.signInWithCredential(
         credential,
       );
+      User? user = userCredential.user;
 
-      return userCredential.user;
+      if (user != null) {
+        await _firestoreService.saveUser(user);
+      }
+
+      return user;
+
+
     } catch (e) {
       print("OTP Error: $e");
 

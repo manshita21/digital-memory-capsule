@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'services/auth_service.dart';
+import '../services/auth_service.dart';
 import 'login_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -17,7 +17,6 @@ class HomeScreen extends StatelessWidget {
             icon: const Icon(Icons.logout),
             onPressed: () async {
               await _authService.signOut();
-
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => LoginScreen()),
