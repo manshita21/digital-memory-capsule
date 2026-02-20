@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 import '../services/memory_service.dart';
 import 'text_memories_screen.dart';
+import 'image_memories_screen.dart';
 
 class CapsuleDetailScreen extends StatelessWidget {
 
@@ -75,6 +78,77 @@ class CapsuleDetailScreen extends StatelessWidget {
               },
 
               child: const Text("Save"),
+
+            )
+
+          ],
+
+        );
+
+      },
+
+    );
+
+  }
+
+  //ADD  IMAGE PICKER
+  Future<void> pickImage(BuildContext context) async {
+
+    final ImagePicker picker = ImagePicker();
+
+    final XFile? picked =
+    await picker.pickImage(
+      source: ImageSource.gallery,
+    );
+
+    if (picked == null) return;
+
+    File imageFile = File(picked.path);
+
+    TextEditingController captionController =
+    TextEditingController();
+
+    showDialog(
+
+      context: context,
+
+      builder: (context) {
+
+        return AlertDialog(
+
+          title: Text("Add Caption"),
+
+          content: TextField(
+            controller: captionController,
+            decoration: InputDecoration(
+              hintText: "Enter caption...",
+            ),
+          ),
+
+          actions: [
+
+            TextButton(
+              onPressed: () =>
+                  Navigator.pop(context),
+              child: Text("Cancel"),
+            ),
+
+            ElevatedButton(
+
+              onPressed: () async {
+
+                await _memoryService.addImageMemory(
+                  capsuleId: capsule.id,
+                  imageFile: imageFile,
+                  caption:
+                  captionController.text.trim(),
+                );
+
+                Navigator.pop(context);
+
+              },
+
+              child: Text("Upload"),
 
             )
 
@@ -167,7 +241,7 @@ class CapsuleDetailScreen extends StatelessWidget {
 
                 ElevatedButton.icon(
 
-                  onPressed: () {},
+                  onPressed: ()=> pickImage(context),
 
                   icon: const Icon(Icons.image),
 
@@ -269,7 +343,17 @@ class CapsuleDetailScreen extends StatelessWidget {
 
               trailing: const Icon(Icons.arrow_forward),
 
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        ImageMemoriesScreen(
+                          capsuleId: capsule.id,
+                        ),
+                  ),
+                );
+              },
 
             ),
 
