@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 import 'login_screen.dart';
+import '../services/capsule_service.dart';
 
 class HomeScreen extends StatelessWidget {
   final AuthService _authService = AuthService();
+  final CapsuleService _capsuleService = CapsuleService();
 
   HomeScreen({super.key});
 
@@ -26,7 +28,29 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
 
-      body: const Center(child: Text("Welcome to Digital Memory Capsule")),
+      body: Center(
+       child:Column(
+         children: [
+            Text("Welcome to Digital Memory Capsule"),
+           ElevatedButton(
+             onPressed: () async {
+
+               await _capsuleService.createCapsule(
+                 title: "My First Capsule",
+                 unlockDate: DateTime.now().add(Duration(days: 30)),
+                 isShared: false,
+               );
+
+               ScaffoldMessenger.of(context).showSnackBar(
+                 SnackBar(content: Text("Capsule Created")),
+               );
+
+             },
+             child: Text("Create Capsule"),
+           ),
+         ],
+       )
+      )
     );
   }
 }
