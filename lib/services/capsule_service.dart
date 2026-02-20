@@ -22,7 +22,7 @@ class CapsuleService {
 
   }
 
-  Future<void> createCapsule({
+  Future<String?> createCapsule({
     required String title,
     required DateTime unlockDate,
     required bool isShared,
@@ -55,6 +55,51 @@ class CapsuleService {
       "createdAt": FieldValue.serverTimestamp(),
 
     });
+
+    return inviteCode;
+
+  }
+
+  Future<bool> joinCapsule(String inviteCode) async {
+
+    try {
+
+      String userId = _auth.currentUser!.uid;
+
+      QuerySnapshot query = await _db
+          .collection("capsules")
+          .where("inviteCode", isEqualTo: inviteCode)
+          .limit(1)
+          .get();
+
+      if (query.docs.isEmpty) {
+        return false;
+      }
+
+      DocumentSnapshot capsuleDoc = query.docs.first;
+
+      List members = capsuleDoc["members"];
+
+      if (!members.contains(userId)) {
+
+        await _db.collection("capsules")
+            .doc(capsuleDoc.id)
+            .update({
+
+          "members": FieldValue.arrayUnion([userId])
+
+        });
+
+      }
+
+      return true;
+
+    } catch (e) {
+
+      print("Join capsule error: $e");
+      return false;
+
+    }
 
   }
 

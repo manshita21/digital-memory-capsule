@@ -7,6 +7,9 @@ class HomeScreen extends StatelessWidget {
   final AuthService _authService = AuthService();
   final CapsuleService _capsuleService = CapsuleService();
 
+  final TextEditingController inviteController =
+  TextEditingController();
+
   HomeScreen({super.key});
 
   @override
@@ -28,29 +31,108 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
 
-      body: Center(
-       child:Column(
-         children: [
-            Text("Welcome to Digital Memory Capsule"),
-           ElevatedButton(
-             onPressed: () async {
 
-               await _capsuleService.createCapsule(
-                 title: "My First Capsule",
-                 unlockDate: DateTime.now().add(Duration(days: 30)),
-                 isShared: false,
-               );
+    body: Padding(
+      padding: const EdgeInsets.all(20),
 
-               ScaffoldMessenger.of(context).showSnackBar(
-                 SnackBar(content: Text("Capsule Created")),
-               );
+      child: Column(
 
-             },
-             child: Text("Create Capsule"),
-           ),
-         ],
-       )
-      )
+        mainAxisAlignment: MainAxisAlignment.center,
+
+        children: [
+          Text("Welcome to Digital Memory Capsule"),
+          ElevatedButton(
+
+            onPressed: () async {
+
+              String? inviteCode = await _capsuleService.createCapsule(
+                title: "My Shared Capsule",
+                unlockDate: DateTime.now().add(Duration(days: 30)),
+                isShared: true,
+              );
+
+              if (inviteCode != null && inviteCode.isNotEmpty) {
+
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+
+                    title: Text("Invite Code"),
+
+                    content: SelectableText(
+                      inviteCode,
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: Text("OK"),
+                      )
+                    ],
+
+                  ),
+                );
+
+              }
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("Shared Capsule Created")),
+              );
+
+            },
+
+            child: Text("Create Shared Capsule"),
+
+          ),
+
+          SizedBox(height: 20),
+
+          TextField(
+            controller: inviteController,
+            decoration: InputDecoration(
+              labelText: "Enter Invite Code",
+              border: OutlineInputBorder(),
+            ),
+          ),
+
+          SizedBox(height: 10),
+
+          ElevatedButton(
+
+            onPressed: () async {
+
+              bool success =
+              await _capsuleService.joinCapsule(
+                  inviteController.text.trim());
+
+              ScaffoldMessenger.of(context).showSnackBar(
+
+                SnackBar(
+                  content: Text(
+                    success
+                        ? "Joined capsule successfully"
+                        : "Invalid invite code",
+                  ),
+                ),
+
+              );
+
+            },
+
+            child: Text("Join Capsule"),
+
+          ),
+
+        ],
+
+      ),
+
+    ),
+
     );
   }
 }
