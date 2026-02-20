@@ -82,4 +82,41 @@ class StorageService {
 
   }
 
+  Future<String?> uploadVideo({
+    required File file,
+    required String capsuleId,
+  }) async {
+
+    try {
+
+      String fileName =
+      DateTime.now().millisecondsSinceEpoch.toString();
+
+      Reference ref = _storage
+          .ref()
+          .child("capsules")
+          .child(capsuleId)
+          .child("videos")
+          .child("$fileName.mp4");
+
+      UploadTask uploadTask =
+      ref.putFile(file);
+
+      TaskSnapshot snapshot =
+      await uploadTask;
+
+      String downloadUrl =
+      await snapshot.ref.getDownloadURL();
+
+      return downloadUrl;
+
+    } catch (e) {
+
+      print("Video upload error: $e");
+      return null;
+
+    }
+
+  }
+
 }

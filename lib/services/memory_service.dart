@@ -40,6 +40,8 @@ class MemoryService {
 
   }
 
+  //ADD IMAGE MEMORY
+
   Future<void> addImageMemory({
     required String capsuleId,
     required File imageFile,
@@ -92,6 +94,8 @@ class MemoryService {
     });
 
   }
+
+ //ADD AUDIO MEMORY
 
   Future<void> addAudioMemory({
     required String capsuleId,
@@ -151,6 +155,54 @@ class MemoryService {
         .where("type", isEqualTo: type)
         .orderBy("createdAt", descending: true)
         .snapshots();
+
+  }
+
+  //ADD VIDEO MEMORY
+
+  Future<void> addVideoMemory({
+    required String capsuleId,
+    required File videoFile,
+    required String caption,
+  }) async {
+
+    User user = _auth.currentUser!;
+
+    String? downloadURL =
+    await _storageService.uploadVideo(
+      file: videoFile,
+      capsuleId: capsuleId,
+    );
+
+    if (downloadURL == null) {
+      throw Exception("Video upload failed");
+    }
+
+    await _db
+        .collection("capsules")
+        .doc(capsuleId)
+        .collection("memories")
+        .add({
+
+      "type": "video",
+
+      "fileURL": downloadURL,
+
+      "caption": caption,
+
+      "text": "",
+
+      "createdBy": user.uid,
+
+      "createdByName":
+      user.displayName ??
+          user.phoneNumber ??
+          "User",
+
+      "createdAt":
+      FieldValue.serverTimestamp(),
+
+    });
 
   }
 

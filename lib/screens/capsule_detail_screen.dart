@@ -10,6 +10,7 @@ import '../services/memory_service.dart';
 import 'text_memories_screen.dart';
 import 'image_memories_screen.dart';
 import 'audio_memories_screen.dart';
+import 'video_memories_screen.dart';
 
 class CapsuleDetailScreen extends StatelessWidget {
 
@@ -271,6 +272,78 @@ class CapsuleDetailScreen extends StatelessWidget {
 
   }
 
+  //ADD VIDEO PICKER
+  Future<void> pickVideo(BuildContext context) async {
+
+    final ImagePicker picker = ImagePicker();
+
+    final XFile? picked =
+    await picker.pickVideo(
+      source: ImageSource.gallery,
+    );
+
+    if (picked == null) return;
+
+    File videoFile = File(picked.path);
+
+    TextEditingController captionController =
+    TextEditingController();
+
+    showDialog(
+
+      context: context,
+
+      builder: (context) {
+
+        return AlertDialog(
+
+          title: Text("Add Caption"),
+
+          content: TextField(
+            controller: captionController,
+            decoration:
+            InputDecoration(
+              hintText: "Enter caption...",
+            ),
+          ),
+
+          actions: [
+
+            TextButton(
+              onPressed: () =>
+                  Navigator.pop(context),
+              child: Text("Cancel"),
+            ),
+
+            ElevatedButton(
+
+              onPressed: () async {
+
+                await _memoryService.addVideoMemory(
+                  capsuleId: capsule.id,
+                  videoFile: videoFile,
+                  caption:
+                  captionController.text.trim(),
+                );
+
+                Navigator.pop(context);
+
+              },
+
+              child: Text("Upload"),
+
+            )
+
+          ],
+
+        );
+
+      },
+
+    );
+
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -384,7 +457,7 @@ class CapsuleDetailScreen extends StatelessWidget {
 
                 ElevatedButton.icon(
 
-                  onPressed: () {},
+                  onPressed: () => pickVideo(context),
 
                   icon: const Icon(Icons.video_library),
 
@@ -496,7 +569,17 @@ class CapsuleDetailScreen extends StatelessWidget {
 
               trailing: const Icon(Icons.arrow_forward),
 
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        VideoMemoriesScreen(
+                          capsuleId: capsule.id,
+                        ),
+                  ),
+                );
+              },
 
             ),
           ],
