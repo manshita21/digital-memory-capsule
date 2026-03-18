@@ -14,6 +14,42 @@ class HomeScreen extends StatelessWidget {
   final TextEditingController inviteController =
   TextEditingController();
 
+ /* Future<void> checkAndUnlockCapsules(
+      List<QueryDocumentSnapshot> capsules) async {
+
+    for (var capsule in capsules) {
+
+      Timestamp? unlockTimestamp =
+      capsule["unlockDate"];
+
+      bool isLocked =
+          capsule["isLocked"] == true;
+
+      if (unlockTimestamp == null || !isLocked) continue;
+
+      DateTime unlockDate =
+      unlockTimestamp.toDate();
+
+      if (DateTime.now().isAfter(unlockDate)) {
+
+        // Auto unlock in Firestore
+
+        await FirebaseFirestore.instance
+            .collection("capsules")
+            .doc(capsule.id)
+            .update({
+
+          "isLocked": false,
+
+        }
+        );
+
+      }
+
+    }
+
+  }*/
+
   HomeScreen({super.key});
 
   @override
@@ -162,7 +198,7 @@ class HomeScreen extends StatelessWidget {
                   );
 
                 }
-
+               // checkAndUnlockCapsules(capsules);
                 return ListView.builder(
 
                   itemCount: capsules.length,
@@ -176,8 +212,21 @@ class HomeScreen extends StatelessWidget {
                     String title =
                     capsule["title"];
 
-                    bool isLocked =
-                    capsule["isLocked"];
+                    Timestamp? unlockTimestamp = capsule["unlockDate"];
+
+                    DateTime? unlockDate = unlockTimestamp?.toDate();
+
+                    bool isLocked = capsule["isLocked"] == true;
+
+                    bool isSealed =
+                        isLocked &&
+                            unlockDate != null &&
+                            DateTime.now().isBefore(unlockDate);
+
+                    bool isUnlocked =
+                        isLocked &&
+                            unlockDate != null &&
+                            DateTime.now().isAfter(unlockDate);
 
                     String inviteCode =
                     capsule["inviteCode"];
@@ -202,20 +251,40 @@ class HomeScreen extends StatelessWidget {
                         },
 
                         leading: Icon(
-                          isLocked
+                          !isLocked
+                              ? Icons.lock_open
+                              : isSealed
                               ? Icons.lock
                               : Icons.lock_open,
-                          color: isLocked
+                          color:
+                          !isLocked
+                              ? Colors.green
+                              : isSealed
                               ? Colors.red
-                              : Colors.green,
+                              : Colors.blue,
                         ),
 
                         title: Text(title),
 
                         subtitle: Text(
-                          isLocked
+
+                          !isLocked
+                              ? "Open"
+
+                              : isSealed
                               ? "Locked"
+
                               : "Unlocked",
+
+                          style: TextStyle(
+                            color:
+                            !isLocked
+                                ? Colors.green
+                                : isSealed
+                                ? Colors.red
+                                : Colors.blue,
+                          ),
+
                         ),
 
                         trailing:
