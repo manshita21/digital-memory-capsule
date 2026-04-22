@@ -6,10 +6,13 @@ import 'package:firebase_app_check/firebase_app_check.dart';
 
 import 'screens/login_screen.dart';
 import 'screens/home_screen.dart';
+import 'firebase_options.dart'; // Ensure options are imported
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   await FirebaseAppCheck.instance.activate(
     androidProvider: AndroidProvider.debug

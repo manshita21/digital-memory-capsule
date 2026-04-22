@@ -119,4 +119,15 @@ class StorageService {
 
   }
 
+  Future<void> deleteFile(String fileUrl) async {
+    try {
+      if (fileUrl.isNotEmpty) {
+        Reference ref = _storage.refFromURL(fileUrl);
+        await ref.delete();
+      }
+    } catch (e) {
+      print("Error deleting file: $e");
+    }
+  }
+
 }

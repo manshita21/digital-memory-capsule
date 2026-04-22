@@ -206,4 +206,50 @@ class MemoryService {
 
   }
 
+  Future<void> toggleReaction({
+    required String capsuleId,
+    required String memoryId,
+    required String emoji,
+  }) async {
+    User user = _auth.currentUser!;
+    DocumentReference memRef = _db.collection("capsules").doc(capsuleId).collection("memories").doc(memoryId);
+
+    DocumentSnapshot doc = await memRef.get();
+    if (!doc.exists) return;
+
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    Map<String, dynamic> reactions = {};
+    if (data.containsKey('reactions')) {
+      reactions = Map<String, dynamic>.from(data['reactions']);
+    }
+
+    if (reactions.containsKey(user.uid) && reactions[user.uid]['emoji'] == emoji) {
+      reactions.remove(user.uid);
+    } else {
+      reactions[user.uid] = {
+        'emoji': emoji,
+        'name': user.displayName ?? user.phoneNumber ?? "User",
+      };
+    }
+
+    await memRef.update({'reactions': reactions});
+  }
+
+  Future<void> deleteMemory({
+    required String capsuleId,
+    required String memoryId,
+    required String fileUrl,
+  }) async {
+    if (fileUrl.isNotEmpty) {
+      await _storageService.deleteFile(fileUrl);
+    }
+
+    await _db
+        .collection("capsules")
+        .doc(capsuleId)
+        .collection("memories")
+        .doc(memoryId)
+        .delete();
+  }
+
 }

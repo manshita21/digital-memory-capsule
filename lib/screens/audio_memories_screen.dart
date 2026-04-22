@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 import '../services/memory_service.dart';
+import '../widgets/memory_card.dart';
 
 class AudioMemoriesScreen extends StatelessWidget {
 
@@ -55,46 +56,26 @@ class AudioMemoriesScreen extends StatelessWidget {
 
               var memory = memories[index];
 
-              return Card(
-
-                margin: EdgeInsets.all(10),
-
-                child: ListTile(
-
-                  title: Text(memory["caption"]),
-
-                  subtitle:
-                  Text("by ${memory["createdByName"]}"),
-
+              String cap = memory["caption"] ?? "";
+              return MemoryCard(
+                capsuleId: capsuleId,
+                memory: memory,
+                content: ListTile(
+                  title: Text(cap.isNotEmpty ? cap : "Audio Memory"),
                   trailing: IconButton(
-
-                    icon: Icon(Icons.play_arrow),
-
-                    onPressed: () async{
-
+                    icon: const Icon(Icons.play_arrow),
+                    onPressed: () async {
                       try {
-
                         print("Playing: ${memory["fileURL"]}");
-
                         await player.stop();
-
-                        await player.setSource(
-                          UrlSource(memory["fileURL"]),
-                        );
+                        await player.setSource(UrlSource(memory["fileURL"]));
                         await player.resume();
-
                       } catch (e) {
-
                         print("Audio play error: $e");
-
                       }
-
                     },
-
                   ),
-
                 ),
-
               );
 
             },

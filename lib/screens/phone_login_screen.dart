@@ -63,6 +63,35 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                   var user = await _authService.verifyOTP(otpController.text);
 
                   if (user != null) {
+                    if (user.displayName == null || user.displayName!.isEmpty) {
+                      final nameController = TextEditingController();
+                      await showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (ctx) {
+                            return AlertDialog(
+                              title: const Text("What's your name?"),
+                              content: TextField(
+                                controller: nameController,
+                                decoration: const InputDecoration(hintText: "Enter your name"),
+                              ),
+                              actions: [
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    if (nameController.text.trim().isNotEmpty) {
+                                      await user.updateDisplayName(nameController.text.trim());
+                                      await user.reload();
+                                    }
+                                    Navigator.pop(ctx);
+                                  },
+                                  child: const Text("Save"),
+                                )
+                              ],
+                            );
+                          }
+                      );
+                    }
+
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (context) => HomeScreen()),

@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:video_player/video_player.dart';
 
 import '../services/memory_service.dart';
+import '../widgets/memory_card.dart';
 
 class VideoMemoriesScreen extends StatelessWidget {
 
@@ -54,9 +55,8 @@ class VideoMemoriesScreen extends StatelessWidget {
               var memory = memories[index];
 
               return VideoTile(
-                url: memory["fileURL"],
-                caption: memory["caption"],
-                user: memory["createdByName"],
+                memory: memory,
+                capsuleId: capsuleId,
               );
 
             },
@@ -75,15 +75,13 @@ class VideoMemoriesScreen extends StatelessWidget {
 
 class VideoTile extends StatefulWidget {
 
-  final String url;
-  final String caption;
-  final String user;
+  final DocumentSnapshot memory;
+  final String capsuleId;
 
   const VideoTile({
     super.key,
-    required this.url,
-    required this.caption,
-    required this.user,
+    required this.memory,
+    required this.capsuleId,
   });
 
   @override
@@ -103,7 +101,7 @@ class _VideoTileState extends State<VideoTile> {
 
     controller =
     VideoPlayerController.network(
-        widget.url)
+        widget.memory["fileURL"])
       ..initialize().then((_) {
         setState(() {});
       });
@@ -113,75 +111,38 @@ class _VideoTileState extends State<VideoTile> {
   @override
   Widget build(BuildContext context) {
 
-    return Card(
-
-      margin: EdgeInsets.all(10),
-
-      child: Column(
-
-        crossAxisAlignment:
-        CrossAxisAlignment.start,
-
+    return MemoryCard(
+      capsuleId: widget.capsuleId,
+      memory: widget.memory,
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-
           if (controller.value.isInitialized)
             AspectRatio(
-              aspectRatio:
-              controller.value.aspectRatio,
+              aspectRatio: controller.value.aspectRatio,
               child: VideoPlayer(controller),
             ),
-
           IconButton(
-
             icon: Icon(
               controller.value.isPlaying
                   ? Icons.pause
                   : Icons.play_arrow,
             ),
-
             onPressed: () {
-
               setState(() {
-
                 controller.value.isPlaying
                     ? controller.pause()
                     : controller.play();
-
               });
-
             },
-
           ),
-
-          Padding(
-
-            padding: EdgeInsets.all(8),
-
-            child: Column(
-
-              crossAxisAlignment:
-              CrossAxisAlignment.start,
-
-              children: [
-
-                Text(widget.caption),
-
-                Text(
-                  "by ${widget.user}",
-                  style:
-                  TextStyle(color: Colors.grey),
-                ),
-
-              ],
-
-            ),
-
-          ),
-
+          if (widget.memory["caption"].toString().isNotEmpty)
+             Padding(
+               padding: const EdgeInsets.all(12),
+               child: Text(widget.memory["caption"]),
+             ),
         ],
-
       ),
-
     );
 
   }

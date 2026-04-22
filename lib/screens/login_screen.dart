@@ -3,6 +3,8 @@ import 'package:lottie/lottie.dart';
 import '../services/auth_service.dart';
 import 'home_screen.dart';
 import 'phone_login_screen.dart';
+import '../widgets/nostalgic_background.dart';
+import '../widgets/glass_widgets.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -11,57 +13,24 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen>
-    with SingleTickerProviderStateMixin {
+class _LoginScreenState extends State<LoginScreen> {
   final AuthService _authService = AuthService();
-
-  late AnimationController _controller;
 
   @override
   void initState() {
     super.initState();
-
-    _controller =
-    AnimationController(vsync: this, duration: const Duration(seconds: 6))
-      ..repeat(reverse: true);
   }
 
   @override
   void dispose() {
-    _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: AnimatedBuilder(
-        animation: _controller,
-        builder: (context, child) {
-          return Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Color.lerp(
-                    const Color(0xFFB993D6),
-                    const Color(0xFF8CA6DB),
-                    _controller.value,
-                  )!,
-                  Color.lerp(
-                    const Color(0xFFE0C3FC),
-                    const Color(0xFF8EC5FC),
-                    _controller.value,
-                  )!,
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-            ),
-            child: child,
-          );
-        },
-
-        // 👇 UI CONTENT
+      extendBodyBehindAppBar: true,
+      body: NostalgicBackground(
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -94,7 +63,7 @@ class _LoginScreenState extends State<LoginScreen>
                   "Preserve your memories forever",
                   style: TextStyle(
                     fontSize: 14,
-                    color: Color(0xFFF5F7FF),
+                    color: Colors.white,
                   ),
                 ),
 
@@ -141,30 +110,27 @@ class _LoginScreenState extends State<LoginScreen>
 
   // 🧊 MODERN BUTTON WIDGET
   Widget _buildButton({required String text, required VoidCallback onPressed}) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
-      width: double.infinity,
-      height: 55,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30),
-        color: Colors.white.withOpacity(0.55),
-        border: Border.all(color: Colors.white30),
-      ),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
+    return GlassContainer(
+      padding: EdgeInsets.zero,
+      child: SizedBox(
+        width: double.infinity,
+        height: 55,
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.transparent,
+            shadowColor: Colors.transparent,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
           ),
-        ),
-        onPressed: onPressed,
-        child: Text(
-          text,
-          style: const TextStyle(
-            fontSize: 16,
-            color: Colors.white,
-            fontWeight: FontWeight.w500,
+          onPressed: onPressed,
+          child: Text(
+            text,
+            style: const TextStyle(
+              fontSize: 16,
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
       ),

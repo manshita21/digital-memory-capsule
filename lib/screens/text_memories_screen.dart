@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../services/memory_service.dart';
+import '../widgets/memory_card.dart';
 
 class TextMemoriesScreen extends StatelessWidget {
 
@@ -66,20 +67,13 @@ class TextMemoriesScreen extends StatelessWidget {
 
               var memory = memories[index];
 
-              return Card(
-
-                margin: EdgeInsets.all(10),
-
-                child: ListTile(
-
-                  title: Text(memory["text"]),
-
-                  subtitle: Text(
-                    "by ${memory["createdByName"]}",
-                  ),
-
+              return MemoryCard(
+                capsuleId: capsuleId,
+                memory: memory,
+                content: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(memory["text"], style: const TextStyle(fontSize: 16)),
                 ),
-
               );
 
             },

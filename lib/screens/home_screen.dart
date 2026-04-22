@@ -5,6 +5,8 @@ import '../services/capsule_service.dart';
 import 'login_screen.dart';
 import 'capsule_detail_screen.dart';
 import 'create_capsule_screen.dart';
+import '../widgets/nostalgic_background.dart';
+import '../widgets/glass_widgets.dart';
 
 
 class HomeScreen extends StatelessWidget {
@@ -55,11 +57,16 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
+        titleTextStyle: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
         title: const Text("Home"),
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout),
+            icon: const Icon(Icons.logout, color: Colors.white),
             onPressed: () async {
               await _authService.signOut();
               Navigator.pushReplacement(
@@ -72,21 +79,26 @@ class HomeScreen extends StatelessWidget {
       ),
 
 
-    body: Padding(
-      padding: const EdgeInsets.all(20),
-
-      child: Column(
+    body: NostalgicBackground(
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
 
         mainAxisAlignment: MainAxisAlignment.center,
 
         children: [
-           const Text(
-            "Welcome to Digital Memory Capsule",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+           GlassContainer(
+             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+             child: const Text(
+               "Welcome to Digital Memory Capsule",
+               style: TextStyle(
+                 fontSize: 18,
+                 fontWeight: FontWeight.bold,
+                 color: Colors.white,
+               ),
+             ),
+           ),
           const SizedBox(height: 20),
 
           // CREATE CAPSULE BUTTON
@@ -106,15 +118,20 @@ class HomeScreen extends StatelessWidget {
             child: Text("Create Capsule"),
           ),
 
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
 
           // INVITE CODE INPUT
 
-          TextField(
-            controller: inviteController,
-            decoration: const InputDecoration(
-              labelText: "Enter Invite Code",
-              border: OutlineInputBorder(),
+          GlassContainer(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: TextField(
+              controller: inviteController,
+              style: const TextStyle(color: Colors.white),
+              decoration: const InputDecoration(
+                labelText: "Enter Invite Code",
+                labelStyle: TextStyle(color: Colors.white70),
+                border: InputBorder.none,
+              ),
             ),
           ),
 
@@ -145,12 +162,14 @@ class HomeScreen extends StatelessWidget {
             child: const Text("Join Capsule"),
           ),
           const SizedBox(height: 20),
-          const Divider(),
+          const Divider(color: Colors.white54),
+          const SizedBox(height: 10),
           const Text(
             "Your Capsules",
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
+              color: Colors.white,
             ),
           ),
 
@@ -231,15 +250,11 @@ class HomeScreen extends StatelessWidget {
                     String inviteCode =
                     capsule["inviteCode"];
 
-                    return Card(
-
-                      margin:
-                      const EdgeInsets.all(8),
-
+                    return GlassContainer(
+                      margin: const EdgeInsets.all(8),
+                      padding: EdgeInsets.zero,
                       child: ListTile(
-
                         onTap: () {
-
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -247,9 +262,7 @@ class HomeScreen extends StatelessWidget {
                                   CapsuleDetailScreen(capsule: capsule),
                             ),
                           );
-
                         },
-
                         leading: Icon(
                           !isLocked
                               ? Icons.lock_open
@@ -258,35 +271,27 @@ class HomeScreen extends StatelessWidget {
                               : Icons.lock_open,
                           color:
                           !isLocked
-                              ? Colors.green
+                              ? Colors.greenAccent
                               : isSealed
-                              ? Colors.red
-                              : Colors.blue,
+                              ? Colors.orangeAccent
+                              : Colors.lightBlueAccent,
                         ),
-
-                        title: Text(title),
-
+                        title: Text(title, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                         subtitle: Text(
-
                           !isLocked
                               ? "Open"
-
                               : isSealed
                               ? "Locked"
-
                               : "Unlocked",
-
                           style: TextStyle(
                             color:
                             !isLocked
-                                ? Colors.green
+                                ? Colors.greenAccent
                                 : isSealed
-                                ? Colors.red
-                                : Colors.blue,
+                                ? Colors.orangeAccent
+                                : Colors.lightBlueAccent,
                           ),
-
                         ),
-
                         trailing:
                         inviteCode.isNotEmpty
                             ? Text(
@@ -295,12 +300,11 @@ class HomeScreen extends StatelessWidget {
                           const TextStyle(
                             fontWeight:
                             FontWeight.bold,
+                            color: Colors.white,
                           ),
                         )
                             : null,
-
                       ),
-
                     );
 
                   },
@@ -308,17 +312,13 @@ class HomeScreen extends StatelessWidget {
                 );
 
               },
-
             ),
-
           ),
-
         ],
-
       ),
-
     ),
-
+    ),
+    ),
     );
   }
 }

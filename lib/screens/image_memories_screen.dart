@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../services/memory_service.dart';
+import '../widgets/memory_card.dart';
 
 class ImageMemoriesScreen extends StatelessWidget {
 
@@ -60,55 +61,23 @@ class ImageMemoriesScreen extends StatelessWidget {
 
               var memory = memories[index];
 
-              return Card(
-
-                margin: EdgeInsets.all(10),
-
-                child: Column(
-
-                  crossAxisAlignment:
-                  CrossAxisAlignment.start,
-
+              return MemoryCard(
+                capsuleId: capsuleId,
+                memory: memory,
+                content: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-
-                    Image.network(
-                      memory["fileURL"],
-                    ),
-
-                    Padding(
-
-                      padding:
-                      EdgeInsets.all(8),
-
-                      child: Column(
-
-                        crossAxisAlignment:
-                        CrossAxisAlignment.start,
-
-                        children: [
-
-                          Text(
-                            memory["caption"],
-                            style: TextStyle(
-                                fontSize: 16),
-                          ),
-
-                          Text(
-                            "by ${memory["createdByName"]}",
-                            style: TextStyle(
-                                color: Colors.grey),
-                          ),
-
-                        ],
-
+                    Image.network(memory["fileURL"], fit: BoxFit.cover),
+                    if (memory["caption"].toString().isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Text(
+                          memory["caption"],
+                          style: const TextStyle(fontSize: 16),
+                        ),
                       ),
-
-                    ),
-
                   ],
-
                 ),
-
               );
 
             },

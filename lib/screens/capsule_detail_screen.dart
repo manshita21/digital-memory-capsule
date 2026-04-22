@@ -11,6 +11,8 @@ import 'text_memories_screen.dart';
 import 'image_memories_screen.dart';
 import 'audio_memories_screen.dart';
 import 'video_memories_screen.dart';
+import '../widgets/nostalgic_background.dart';
+import '../widgets/glass_widgets.dart';
 
 class CapsuleDetailScreen extends StatelessWidget {
 
@@ -409,28 +411,35 @@ class CapsuleDetailScreen extends StatelessWidget {
             DateTime.now().isAfter(unlockDate);
 
     return Scaffold(
-
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text(title),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: Text(title, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       ),
 
-      body: Padding(
-
-        padding: const EdgeInsets.all(20),
-
-        child: Column(
-
-          crossAxisAlignment: CrossAxisAlignment.start,
-
-          children: [
-
-            Text(
-              "Capsule Title: $title",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+      body: NostalgicBackground(
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                GlassContainer(
+                   padding: const EdgeInsets.all(12),
+                   child: Column(
+                     crossAxisAlignment: CrossAxisAlignment.start,
+                     children: [
+                        Text(
+                          "Capsule Title: $title",
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
 
             const SizedBox(height: 8),
 
@@ -438,6 +447,7 @@ class CapsuleDetailScreen extends StatelessWidget {
               Text("Invite Code: $inviteCode",
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
+                  color: Colors.white,
                 ),),
 
             const SizedBox(height: 8),
@@ -453,17 +463,20 @@ class CapsuleDetailScreen extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
                 color: !isLocked
-                    ? Colors.green
+                    ? Colors.greenAccent
                     : isSealed
-                    ? Colors.red
-                    : Colors.blue,
+                    ? Colors.orangeAccent
+                    : Colors.lightBlueAccent,
               ),
             ),
+            ]
+           ),
+           ),
 
 
             const SizedBox(height: 20),
 
-            const Divider(),
+            const Divider(color: Colors.white54),
 
             const SizedBox(height: 10),
 
@@ -552,15 +565,19 @@ class CapsuleDetailScreen extends StatelessWidget {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
             ),
 
             const SizedBox(height: 10),
 
             // MEMORY CATEGORY TILES
-
-            ListTile(
-
+            GlassContainer(
+              margin: const EdgeInsets.symmetric(vertical: 4),
+              padding: EdgeInsets.zero,
+              child: ListTile(
+              iconColor: Colors.white,
+              textColor: Colors.white,
               leading: const Icon(Icons.text_snippet),
 
               title: const Text("Text Memories"),
@@ -590,9 +607,14 @@ class CapsuleDetailScreen extends StatelessWidget {
                 );
               },
             ),
+            ),
 
-            ListTile(
-
+            GlassContainer(
+              margin: const EdgeInsets.symmetric(vertical: 4),
+              padding: EdgeInsets.zero,
+              child: ListTile(
+              iconColor: Colors.white,
+              textColor: Colors.white,
               leading: const Icon(Icons.image),
 
               title: const Text("Image Memories"),
@@ -622,9 +644,14 @@ class CapsuleDetailScreen extends StatelessWidget {
                 );
               },
             ),
+            ),
 
-            ListTile(
-
+            GlassContainer(
+              margin: const EdgeInsets.symmetric(vertical: 4),
+              padding: EdgeInsets.zero,
+              child: ListTile(
+              iconColor: Colors.white,
+              textColor: Colors.white,
               leading: const Icon(Icons.mic),
 
               title: const Text("Audio Memories"),
@@ -654,9 +681,14 @@ class CapsuleDetailScreen extends StatelessWidget {
                 );
               },
             ),
+            ),
 
-            ListTile(
-
+            GlassContainer(
+              margin: const EdgeInsets.symmetric(vertical: 4),
+              padding: EdgeInsets.zero,
+              child: ListTile(
+              iconColor: Colors.white,
+              textColor: Colors.white,
               leading: const Icon(Icons.video_library),
 
               title: const Text("Video Memories"),
@@ -686,30 +718,35 @@ class CapsuleDetailScreen extends StatelessWidget {
                 );
               },
             ),
+            ),
 
             if (!isLocked)
 
-              ElevatedButton.icon(
+              Center(
+              child: ElevatedButton.icon(
 
                 onPressed:
                     () => lockCapsule(context),
 
                 icon:
-                const Icon(Icons.lock),
+                const Icon(Icons.lock, color: Colors.white),
 
                 label:
-                const Text("Lock Capsule"),
+                const Text("Lock Capsule", style: TextStyle(color: Colors.white)),
 
                 style:
                 ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
+                  backgroundColor: Colors.redAccent,
                 ),
 
               ),
+              ),
           ],
 
+              ),
+            ),
+          ),
         ),
-
       ),
 
 
